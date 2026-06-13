@@ -1,6 +1,6 @@
 const CONTACT = {
   phone: "9911156655",
-  whatsapp: "8851066112",
+  whatsapp: "9911156655",
   email: "expertfinancialconsultancy@gmail.com",
 };
 
@@ -389,12 +389,21 @@ const CALC_CONFIGS = {
 
 /* ── Utility Functions ── */
 
-function basePath() {
-  return window.location.pathname.includes("/pages/") ? "../" : "";
+function relativeRoot() {
+  const path = window.location.pathname;
+  if (path.includes('/pages/')) return '../';
+  // Fallback for file:// protocol where it might just end in /index.html or similar
+  if (window.location.href.includes('/pages/')) return '../';
+  return './';
+}
+
+function pagePath(slug) {
+  if (slug === 'index' || slug === '') return `${relativeRoot()}index.html`;
+  return `${relativeRoot()}pages/${slug}.html`;
 }
 
 function imagePath(file) {
-  return `${basePath()}images/${file}`;
+  return `${relativeRoot()}images/${file}`;
 }
 
 function iconMarkup(file, label) {
@@ -402,8 +411,10 @@ function iconMarkup(file, label) {
 }
 
 function pageSlug() {
-  const file = window.location.pathname.split("/").pop() || "index.html";
-  return file.replace(".html", "");
+  const path = window.location.pathname;
+  // Handle both / and /index.html
+  if (path === "/" || path === "/index.html" || path.endsWith("/index.html") && !path.includes("/pages/")) return "index";
+  return path.split("/").filter(Boolean).pop().replace(".html", "") || "index";
 }
 
 function fmtINR(n) {
@@ -412,19 +423,39 @@ function fmtINR(n) {
 
 /* ── Navigation, Footer, Floating Actions ── */
 
-function navMarkup() {
-  const base = basePath();
-  const links = [
-    [base + "index.html", "Home", "index"],
-    [base + "pages/about.html", "About", "about"],
-    [base + "pages/life-insurance.html", "Insurance", "life-insurance"],
-    [base + "pages/insurance-partners.html", "Partners", "insurance-partners"],
-    [base + "pages/claims-assistance.html", "Claims", "claims-assistance"],
-    [base + "pages/advisor-opportunity.html", "Advisor", "advisor-opportunity"],
-    [base + "pages/blog.html", "Blog", "blog"],
-    [base + "pages/contact.html", "Contact", "contact"],
-  ];
+const WA_MESSAGES = {
+  "index": "Hi Wealthura, I visited your website and need insurance guidance. Please help.",
+  "life-insurance": "Hi Wealthura, I am interested in Life Insurance. Please share the best plans.",
+  "general-insurance": "Hi Wealthura, I am looking for General Insurance options. Please guide me.",
+  "health-insurance": "Hi Wealthura, I need a Health Insurance quote. Can you help me compare plans?",
+  "motor-insurance": "Hi Wealthura, I need Motor Insurance for my car. Please share the best options.",
+  "bike-insurance": "Hi Wealthura, I need Bike Insurance for my two-wheeler. Please advise.",
+  "travel-insurance": "Hi Wealthura, I am planning a trip and need Travel Insurance. Please help.",
+  "group-health-insurance": "Hi Wealthura, I need Group Health Insurance for my team. Please share options.",
+  "corporate-insurance": "Hi Wealthura, I need Corporate Insurance solutions for my business. Please advise.",
+  "marine-insurance": "Hi Wealthura, I need Marine Insurance for cargo and transit. Please share details.",
+  "cyber-insurance": "Hi Wealthura, I need Cyber Insurance to protect my business. Please advise.",
+  "liability-insurance": "Hi Wealthura, I need Liability Insurance for my business. Please help.",
+  "property-insurance": "Hi Wealthura, I need Property Insurance for my commercial assets. Please share options.",
+  "advisor-opportunity": "Hi Wealthura, I am interested in becoming an Insurance Advisor. Please share details.",
+  "insurance-partners": "Hi Wealthura, I want to learn about your insurance partners. Please help.",
+  "claims-assistance": "Hi Wealthura, I need help with an insurance claim. Please assist.",
+  "contact": "Hi Wealthura, I have an enquiry. Please get in touch.",
+  "about": "Hi Wealthura, I want to learn more about your advisory services.",
+  "blog": "Hi Wealthura, I was reading your blog and have a question."
+};
+
+function getWaUrl() {
   const slug = pageSlug();
+  const msg = WA_MESSAGES[slug] || WA_MESSAGES["index"];
+  return `https://wa.me/91${CONTACT.whatsapp}?text=${encodeURIComponent(msg)}`;
+}
+
+function navMarkup() {
+  const slug = pageSlug();
+  const insuranceSlugs = ["life-insurance","general-insurance","health-insurance","motor-insurance","bike-insurance","travel-insurance","group-health-insurance","corporate-insurance","marine-insurance","cyber-insurance","liability-insurance","property-insurance"];
+  const isInsurancePage = insuranceSlugs.includes(slug);
+
   return `
     <div class="top-strip">
       <div class="container">
@@ -434,18 +465,31 @@ function navMarkup() {
     </div>
     <header class="site-header" id="siteHeader">
       <div class="container nav-wrap">
-        <a class="brand" href="${base}index.html" aria-label="Wealthura home">
+        <a class="brand" href="${pagePath("index")}" aria-label="Wealthura home">
           <span class="brand-mark"><img src="${imagePath("wealthura logo.jpg")}" alt="Wealthura logo"></span><span>Wealthura</span>
         </a>
         <button class="nav-toggle" type="button" aria-label="Open navigation" aria-expanded="false">
           <span></span><span></span><span></span>
         </button>
         <nav class="site-nav" aria-label="Primary navigation">
-          ${links.map(([href, label, key]) => `<a class="${slug === key ? "is-active" : ""}" href="${href}">${label}</a>`).join("")}
+          <a class="${slug === "index" ? "is-active" : ""}" href="${pagePath("index")}">Home</a>
+          <div class="nav-dropdown${isInsurancePage ? " is-active" : ""}">
+            <button type="button" class="nav-dropdown-trigger${isInsurancePage ? " is-active" : ""}">Insurance <svg class="nav-chevron" width="10" height="6" viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+            <div class="nav-dropdown-menu" style="min-width: 220px; padding: 12px 0;">
+              <a href="${pagePath("life-insurance")}" style="display:block; padding:10px 20px; color:var(--navy); font-weight:600; text-decoration:none;">Life Insurance</a>
+              <a href="${pagePath("general-insurance")}" style="display:block; padding:10px 20px; color:var(--navy); font-weight:600; text-decoration:none;">General Insurance</a>
+            </div>
+          </div>
+          <a class="${slug === "advisor-opportunity" ? "is-active" : ""}" href="${pagePath("advisor-opportunity")}">Advisor</a>
+          <a class="${slug === "insurance-partners" ? "is-active" : ""}" href="${pagePath("insurance-partners")}">Partners</a>
+          <a class="${slug === "claims-assistance" ? "is-active" : ""}" href="${pagePath("claims-assistance")}">Claims</a>
+          <a class="${slug === "about" ? "is-active" : ""}" href="${pagePath("about")}">About</a>
+          <a class="${slug === "blog" ? "is-active" : ""}" href="${pagePath("blog")}">Blog</a>
+          <a class="${slug === "contact" ? "is-active" : ""}" href="${pagePath("contact")}">Contact</a>
         </nav>
         <div class="nav-cta">
           <a class="btn btn-ghost" href="tel:${CONTACT.phone}"><img src="${imagePath("phone-logo.svg")}" alt="">Call</a>
-          <a class="btn btn-primary" href="https://wa.me/91${CONTACT.whatsapp}?text=Hi%20Wealthura%2C%20I%20need%20insurance%20guidance." target="_blank" rel="noopener"><img src="${imagePath("whatsapp-logo.svg")}" alt="">WhatsApp</a>
+          <a class="btn btn-primary" href="${getWaUrl()}" target="_blank" rel="noopener"><img src="${imagePath("whatsapp-logo.svg")}" alt="">WhatsApp</a>
         </div>
       </div>
     </header>
@@ -453,30 +497,35 @@ function navMarkup() {
 }
 
 function footerMarkup() {
-  const base = basePath();
   return `
     <footer class="site-footer">
       <div class="container">
         <div class="footer-grid">
           <div>
-            <a class="brand" href="${base}index.html"><span class="brand-mark"><img src="${imagePath("wealthura logo.jpg")}" alt="Wealthura logo"></span><span style="color:#fff">Wealthura</span></a>
+            <a class="brand" href="${pagePath("index")}"><span class="brand-mark"><img src="${imagePath("wealthura logo.jpg")}" alt="Wealthura logo"></span><span style="color:#fff">Wealthura</span></a>
             <p>Trusted insurance advisory for individuals, families, professionals and businesses. Compare options from multiple insurers and choose suitable protection with expert guidance.</p>
           </div>
           <div>
-            <h3>Insurance</h3>
+            <h3>Life Insurance</h3>
             <div class="footer-links">
-              ${PRODUCTS.slice(0, 6).map(([slug, name]) => `<a href="${base}pages/${slug}.html">${name}</a>`).join("")}
+              <a href="${pagePath("life-insurance")}">Comprehensive Life Insurance</a>
+            </div>
+            <h3 style="margin-top: 24px;">General Insurance</h3>
+            <div class="footer-links">
+              <a href="${pagePath("general-insurance")}">Explore General Insurance</a>
             </div>
           </div>
           <div>
-            <h3>Business</h3>
+            <h3>Company</h3>
             <div class="footer-links">
-              ${PRODUCTS.slice(6).map(([slug, name]) => `<a href="${base}pages/${slug}.html">${name}</a>`).join("")}
-              <a href="${base}pages/advisor-opportunity.html">Insurance Advisor Opportunity</a>
+              <a href="${pagePath("about")}">About Wealthura</a>
+              <a href="${pagePath("insurance-partners")}">Insurance Partners</a>
+              <a href="${pagePath("claims-assistance")}">Claims Assistance</a>
+              <a href="${pagePath("advisor-opportunity")}">Advisor Opportunity</a>
+              <a href="${pagePath("blog")}">Insurance Blog</a>
+              <a href="${pagePath("contact")}">Contact Us</a>
             </div>
-          </div>
-          <div>
-            <h3>Contact</h3>
+            <h3 style="margin-top:18px">Contact</h3>
             <div class="footer-links">
               <a href="tel:${CONTACT.phone}">${CONTACT.phone}</a>
               <a href="https://wa.me/91${CONTACT.whatsapp}" target="_blank" rel="noopener">WhatsApp ${CONTACT.whatsapp}</a>
@@ -485,7 +534,7 @@ function footerMarkup() {
             </div>
           </div>
         </div>
-        <div class="footer-bottom">(c) ${new Date().getFullYear()} Wealthura. Insurance advisory services. Product selection is subject to insurer underwriting, terms and conditions.</div>
+        <div class="footer-bottom">© ${new Date().getFullYear()} Wealthura. WEALTHURA is a brand operated under Expert Financial Consultancy. All Rights Reserved.</div>
       </div>
     </footer>
   `;
@@ -494,7 +543,7 @@ function footerMarkup() {
 function floatingActions() {
   return `
     <div class="floating-actions" aria-label="Quick contact actions">
-      <a class="float-btn float-whatsapp" href="https://wa.me/91${CONTACT.whatsapp}?text=Hi%20Wealthura%2C%20I%20need%20insurance%20guidance." target="_blank" rel="noopener" aria-label="WhatsApp Wealthura"><img src="${imagePath("whatsapp-logo.svg")}" alt=""></a>
+      <a class="float-btn float-whatsapp float-pulse" href="${getWaUrl()}" target="_blank" rel="noopener" aria-label="WhatsApp Wealthura"><img src="${imagePath("whatsapp-logo.svg")}" alt=""></a>
       <a class="float-btn float-call" href="tel:${CONTACT.phone}" aria-label="Call Wealthura"><img src="${imagePath("phone-logo.svg")}" alt=""></a>
     </div>
   `;
@@ -510,8 +559,9 @@ function leadFormMarkup(type = "") {
       <div class="field"><label>Mobile*</label><input name="mobile" inputmode="numeric" autocomplete="tel" required pattern="[0-9]{10}"><span class="error">Enter a valid 10 digit mobile number.</span></div>
       <div class="field"><label>Email</label><input name="email" type="email" autocomplete="email"><span class="error">Enter a valid email address.</span></div>
       <div class="field"><label>City*</label><input name="city" autocomplete="address-level2" required><span class="error">Please enter your city.</span></div>
-      <div class="field"><label>Insurance Type*</label><select name="insuranceType" required><option value="">Select insurance type</option>${options}</select><span class="error">Select an insurance type.</span></div>
-      <button class="btn btn-primary" type="submit">Request Quote</button>
+      <div class="field"><label>Insurance Requirement*</label><select name="insuranceType" required><option value="">Select insurance requirement</option>${options}</select><span class="error">Select an insurance requirement.</span></div>
+      <div class="field"><label>Message</label><textarea name="message" rows="3"></textarea></div>
+      <button class="btn btn-primary" type="submit">Submit Enquiry</button>
       <div class="form-success">Thank you. Wealthura will contact you shortly.</div>
     </form>
   `;
@@ -524,8 +574,9 @@ function advisorFormMarkup() {
       <div class="field"><label>Mobile*</label><input name="mobile" inputmode="numeric" autocomplete="tel" required pattern="[0-9]{10}"><span class="error">Enter a valid 10 digit mobile number.</span></div>
       <div class="field"><label>Email*</label><input name="email" type="email" autocomplete="email" required><span class="error">Enter a valid email address.</span></div>
       <div class="field"><label>City*</label><input name="city" required><span class="error">Please enter your city.</span></div>
+      <div class="field"><label>Experience*</label><input name="experience" required><span class="error">Please enter your experience.</span></div>
       <div class="field"><label>Current Occupation*</label><input name="occupation" required><span class="error">Please enter your occupation.</span></div>
-      <button class="btn btn-primary" type="submit">Apply Now</button>
+      <button class="btn btn-primary" type="submit">Apply as Advisor</button>
       <div class="form-success">Application received. Our advisor team will connect with you.</div>
     </form>
   `;
@@ -623,7 +674,7 @@ function calculatorMarkup() {
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
             Indicative estimate only. Final premium depends on insurer underwriting, medicals, plan features and applicable GST.
           </div>
-          <a class="btn btn-primary pcalc-cta" href="https://wa.me/91${CONTACT.whatsapp}?text=Hi%20Wealthura%2C%20I%20need%20a%20premium%20quote." target="_blank" rel="noopener">Get Exact Quote on WhatsApp</a>
+          <a class="btn btn-primary pcalc-cta" href="${getWaUrl()}" target="_blank" rel="noopener">Get Exact Quote on WhatsApp</a>
         </div>
       </div>
     </div>
@@ -943,11 +994,23 @@ function setupSlider() {
 function initShell() {
   document.querySelector("#site-shell").insertAdjacentHTML("afterbegin", navMarkup());
   document.querySelector("#site-shell").insertAdjacentHTML("beforeend", footerMarkup() + floatingActions());
+  // Mobile hamburger
   document.querySelector(".nav-toggle")?.addEventListener("click", (event) => {
     const header = document.querySelector("#siteHeader");
     const open = !header.classList.contains("is-open");
     header.classList.toggle("is-open", open);
     event.currentTarget.setAttribute("aria-expanded", String(open));
+  });
+  // Dropdown triggers (mobile click, desktop hover handled via CSS)
+  document.querySelectorAll(".nav-dropdown-trigger").forEach(btn => {
+    btn.addEventListener("click", (e) => {
+      e.preventDefault();
+      const dropdown = btn.closest(".nav-dropdown");
+      const isOpen = dropdown.classList.contains("is-open");
+      // Close all other dropdowns
+      document.querySelectorAll(".nav-dropdown.is-open").forEach(d => d.classList.remove("is-open"));
+      if (!isOpen) dropdown.classList.add("is-open");
+    });
   });
 }
 

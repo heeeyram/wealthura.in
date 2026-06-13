@@ -1,7 +1,7 @@
 .page-hero {
   background-image:
     linear-gradient(135deg, rgba(7, 26, 58, 0.92), rgba(15, 45, 92, 0.85)),
-    url("../images/hero-bike-insurance.png");
+    url("/images/hero-bike-insurance.png");
   background-position: center;
   background-size: cover;
 }

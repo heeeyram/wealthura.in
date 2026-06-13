@@ -1,0 +1,60 @@
+{
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "headers": [
+    {
+      "source": "/images/(.*)",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
+      ]
+    },
+    {
+      "source": "/css/(.*)",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=604800" }
+      ]
+    },
+    {
+      "source": "/js/(.*)",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=604800" }
+      ]
+    },
+    {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "X-Content-Type-Options", "value": "nosniff" },
+        { "key": "X-Frame-Options", "value": "DENY" },
+        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" }
+      ]
+    }
+  ],
+  "rewrites": [
+    { "source": "/about", "destination": "/pages/about.html" },
+    { "source": "/life-insurance", "destination": "/pages/life-insurance.html" },
+    { "source": "/health-insurance", "destination": "/pages/health-insurance.html" },
+    { "source": "/motor-insurance", "destination": "/pages/motor-insurance.html" },
+    { "source": "/bike-insurance", "destination": "/pages/bike-insurance.html" },
+    { "source": "/travel-insurance", "destination": "/pages/travel-insurance.html" },
+    { "source": "/group-health-insurance", "destination": "/pages/group-health-insurance.html" },
+    { "source": "/corporate-insurance", "destination": "/pages/corporate-insurance.html" },
+    { "source": "/marine-insurance", "destination": "/pages/marine-insurance.html" },
+    { "source": "/cyber-insurance", "destination": "/pages/cyber-insurance.html" },
+    { "source": "/liability-insurance", "destination": "/pages/liability-insurance.html" },
+    { "source": "/property-insurance", "destination": "/pages/property-insurance.html" },
+    { "source": "/insurance-partners", "destination": "/pages/insurance-partners.html" },
+    { "source": "/claims-assistance", "destination": "/pages/claims-assistance.html" },
+    { "source": "/advisor-opportunity", "destination": "/pages/advisor-opportunity.html" },
+    { "source": "/blog", "destination": "/pages/blog.html" },
+    { "source": "/contact", "destination": "/pages/contact.html" }
+  ],
+  "redirects": [
+    { "source": "/partners", "destination": "/insurance-partners", "statusCode": 301 },
+    { "source": "/term-insurance", "destination": "/life-insurance", "statusCode": 301 },
+    { "source": "/family-protection", "destination": "/life-insurance", "statusCode": 301 },
+    { "source": "/child-future-plans", "destination": "/life-insurance", "statusCode": 301 },
+    { "source": "/retirement-plans", "destination": "/life-insurance", "statusCode": 301 },
+    { "source": "/investment-linked-plans", "destination": "/life-insurance", "statusCode": 301 },
+    { "source": "/pages/:path", "destination": "/:path", "statusCode": 301 }
+  ]
+}

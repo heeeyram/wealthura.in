@@ -1,1 +1,65 @@
 .card .icon { margin-bottom: 14px; }
+
+.faq-list {
+  display: grid;
+  gap: 10px;
+  max-width: 780px;
+  margin-inline: auto;
+}
+
+.faq-item {
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  overflow: hidden;
+  transition: border-color 0.2s;
+}
+
+.faq-item[open] {
+  border-color: var(--gold);
+}
+
+.faq-item summary {
+  padding: 16px 20px;
+  font-weight: 650;
+  cursor: pointer;
+  list-style: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  transition: color 0.2s;
+}
+
+.faq-item summary::-webkit-details-marker {
+  display: none;
+}
+
+.faq-item summary::after {
+  content: "+";
+  font-size: 1.3rem;
+  font-weight: 300;
+  color: var(--gold);
+  flex-shrink: 0;
+  transition: transform 0.2s;
+}
+
+.faq-item[open] summary::after {
+  content: "−";
+  transform: rotate(180deg);
+}
+
+.faq-item[open] summary {
+  color: var(--gold);
+}
+
+.faq-item p {
+  padding: 0 20px 18px;
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.7;
+}
+
+.cta-band.section-soft {
+  text-align: center;
+}
