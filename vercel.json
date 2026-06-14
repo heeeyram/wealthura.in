@@ -55,7 +55,6 @@
     { "source": "/family-protection", "destination": "/life-insurance", "statusCode": 301 },
     { "source": "/child-future-plans", "destination": "/life-insurance", "statusCode": 301 },
     { "source": "/retirement-plans", "destination": "/life-insurance", "statusCode": 301 },
-    { "source": "/investment-linked-plans", "destination": "/life-insurance", "statusCode": 301 },
-    { "source": "/pages/:path", "destination": "/:path", "statusCode": 301 }
+    { "source": "/investment-linked-plans", "destination": "/life-insurance", "statusCode": 301 }
   ]
 }
