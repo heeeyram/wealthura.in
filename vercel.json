@@ -31,6 +31,7 @@
   ],
   "rewrites": [
     { "source": "/about", "destination": "/pages/about.html" },
+    { "source": "/general-insurance", "destination": "/pages/general-insurance.html" },
     { "source": "/life-insurance", "destination": "/pages/life-insurance.html" },
     { "source": "/health-insurance", "destination": "/pages/health-insurance.html" },
     { "source": "/motor-insurance", "destination": "/pages/motor-insurance.html" },

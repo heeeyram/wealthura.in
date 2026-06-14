@@ -389,17 +389,30 @@ const CALC_CONFIGS = {
 
 /* ── Utility Functions ── */
 
+function isLocalDev() {
+  if (window.location.protocol === 'file:') return true;
+  const host = window.location.hostname;
+  return host === 'localhost' || host === '127.0.0.1' || host.startsWith('192.168.');
+}
+
 function relativeRoot() {
-  const path = window.location.pathname;
-  if (path.includes('/pages/')) return '../';
-  // Fallback for file:// protocol where it might just end in /index.html or similar
-  if (window.location.href.includes('/pages/')) return '../';
-  return './';
+  if (isLocalDev()) {
+    const path = window.location.pathname;
+    if (path.includes('/pages/')) return '../';
+    if (window.location.href.includes('/pages/')) return '../';
+    return './';
+  }
+  return '/';
 }
 
 function pagePath(slug) {
-  if (slug === 'index' || slug === '') return `${relativeRoot()}index.html`;
-  return `${relativeRoot()}pages/${slug}.html`;
+  if (isLocalDev()) {
+    if (slug === 'index' || slug === '') return `${relativeRoot()}index.html`;
+    return `${relativeRoot()}pages/${slug}.html`;
+  }
+  // On Vercel: use clean URLs
+  if (slug === 'index' || slug === '') return '/';
+  return `/${slug}`;
 }
 
 function imagePath(file) {
