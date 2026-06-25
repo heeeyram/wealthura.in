@@ -1,7 +1,7 @@
 const CONTACT = {
   phone: "9911156655",
   whatsapp: "9911156655",
-  email: "expertfinancialconsultancy@gmail.com",
+  email: "info@wealthura.in",
 };
 
 const PRODUCTS = [
@@ -489,8 +489,8 @@ function navMarkup() {
           <div class="nav-dropdown${isInsurancePage ? " is-active" : ""}">
             <button type="button" class="nav-dropdown-trigger${isInsurancePage ? " is-active" : ""}">Insurance <svg class="nav-chevron" width="10" height="6" viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
             <div class="nav-dropdown-menu" style="min-width: 220px; padding: 12px 0;">
-              <a href="${pagePath("life-insurance")}" style="display:block; padding:10px 20px; color:var(--navy); font-weight:600; text-decoration:none;">Life Insurance</a>
-              <a href="${pagePath("general-insurance")}" style="display:block; padding:10px 20px; color:var(--navy); font-weight:600; text-decoration:none;">General Insurance</a>
+              <a href="${pagePath("life-insurance")}" style="display:block; padding:10px 20px; color:#071a3a !important; font-weight:600; text-decoration:none; font-size:1rem;">Life Insurance</a>
+              <a href="${pagePath("general-insurance")}" style="display:block; padding:10px 20px; color:#071a3a !important; font-weight:600; text-decoration:none; font-size:1rem;">General Insurance</a>
             </div>
           </div>
           <a class="${slug === "advisor-opportunity" ? "is-active" : ""}" href="${pagePath("advisor-opportunity")}">Advisor</a>
